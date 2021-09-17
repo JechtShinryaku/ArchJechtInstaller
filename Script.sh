@@ -9,12 +9,16 @@ else
 	exit 1
 fi
 
-echo "Este Script aun esta en desarrollo y asume lo siguiente:"
-echo "-Se dispone de conexion a internet"
-echo "-Esta máquina ya tiene creadas y preformateadas las particiones que se usaran durante la instalacion."
-echo "Lo hare lo mejor que pueda pero si algo falla que no venga nadie a llorarme."
-echo "Si todo esta preparado pulsa Intro para continuar, en caso contrario pulsa q para abortar la instalacion."
-read -n 1 -r -s conform
+pacman -Sy dialog --noconfirm
+
+dialog --title "Arch Jecht Installer" --yesno "Este Script aun esta en desarrollo y asume lo siguiente:\n -Se dispone de conexion a internet.\n -Esta máquina ya tiene creadas y preformateadas las particiones que se usaran durante la instalacion.\n\n Lo hare lo mejor que pueda pero si algo falla que no venga nadie a llorarme." 0 0
+
+#echo "Este Script aun esta en desarrollo y asume lo siguiente:"
+#echo "-Se dispone de conexion a internet"
+#echo "-Esta máquina ya tiene creadas y preformateadas las particiones que se usaran durante la instalacion."
+#echo "Lo hare lo mejor que pueda pero si algo falla que no venga nadie a llorarme."
+#echo "Si todo esta preparado pulsa Intro para continuar, en caso contrario pulsa q para abortar la instalacion."
+#read -n 1 -r -s conform
 #Aceptacion
 if [ "$conform" = "q" ];then
 	echo "saliendo"
