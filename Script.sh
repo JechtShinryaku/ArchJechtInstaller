@@ -11,7 +11,7 @@ fi
 
 pacman -Sy dialog --noconfirm
 
-dialog --title "Arch Jecht Installer" --yesno "Este Script aun esta en desarrollo y asume lo siguiente:\n -Se dispone de conexion a internet.\n -Esta máquina ya tiene creadas y preformateadas las particiones que se usaran durante la instalacion.\n\n Lo hare lo mejor que pueda pero si algo falla que no venga nadie a llorarme." 0 0
+dialog --title "Arch Jecht Installer" --yesno "Este Script aun esta en desarrollo y asume lo siguiente:\n -Se dispone de conexion a internet.\n -Esta máquina ya tiene creadas y preformateadas las particiones / y swap.\n\nLo hare lo mejor que pueda pero si algo falla que no venga nadie a llorarme." 0 0
 
 #echo "Este Script aun esta en desarrollo y asume lo siguiente:"
 #echo "-Se dispone de conexion a internet"
