@@ -42,9 +42,11 @@ else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido establecer la zona horaria, tendras que hacerlo manualmente depues."
 fi
 
+clear
 
 #Mostrar particiones disponibles
 if fdisk -l;then
+	echo ""
 	echo "Estas son las particiones disponibles, elige donde se instalara el sistema (ejemplo: sda1)."
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se pueden mostrar las particiones, soluciona el problema y vuelve a empezar"
