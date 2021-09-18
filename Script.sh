@@ -11,7 +11,6 @@ fi
 
 pacman -Sy dialog --noconfirm
 
-dialog --title "Arch Jecht Installer" --yesno "Este Script aun esta en desarrollo y asume lo siguiente:\n -Se dispone de conexion a internet.\n -Esta máquina ya tiene creadas y preformateadas las particiones / y swap.\n\nLo hare lo mejor que pueda pero si algo falla que no venga nadie a llorarme." 0 0
 
 #echo "Este Script aun esta en desarrollo y asume lo siguiente:"
 #echo "-Se dispone de conexion a internet"
@@ -20,10 +19,11 @@ dialog --title "Arch Jecht Installer" --yesno "Este Script aun esta en desarroll
 #echo "Si todo esta preparado pulsa Intro para continuar, en caso contrario pulsa q para abortar la instalacion."
 #read -n 1 -r -s conform
 #Aceptacion
-if [ "$conform" = "q" ];then
-	echo "saliendo"
+if dialog --title "Arch Jecht Installer" --yesno "Este Script aun esta en desarrollo y asume lo siguiente:\n -Se dispone de conexion a internet.\n -Esta máquina ya tiene creadas y preformateadas las particiones / y swap.\n\nLo hare lo mejor que pueda pero si algo falla que no venga nadie a llorarme." 0 0
+;then
+	clear
 else
-	echo "comenzando"
+	exit 1
 fi
 
 #Asignacion de teclado a español
@@ -54,7 +54,7 @@ read -r system_partition
 
 #Montaje e instalacion
 if mount /dev/$system_partition /mnt;then
-	echo "Particion montada correctamente, procediendo ha instalar..."
+	echo "Particion montada correctamente, comenzando instalación..."
 else
 	echo "Error montando particion."
 	exit 1
