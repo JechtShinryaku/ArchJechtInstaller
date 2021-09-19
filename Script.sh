@@ -19,7 +19,7 @@ pacman -Sy dialog --noconfirm
 #echo "Si todo esta preparado pulsa Intro para continuar, en caso contrario pulsa q para abortar la instalacion."
 #read -n 1 -r -s conform
 #Aceptacion
-if dialog --title "Arch Jecht Installer" --yesno "Este Script aun esta en desarrollo y asume lo siguiente:\n -Se dispone de conexion a internet.\n -Esta máquina ya tiene creadas y preformateadas las particiones / y swap.\n\nLo hare lo mejor que pueda pero si algo falla que no venga nadie a llorarme." 0 0
+if dialog --title "Arch Jecht Installer" --yesno "Este Script aun esta en desarrollo y asume lo siguiente:\n -Se dispone de conexion a internet.\n -Esta máquina ya tiene creadas (al menos)y preformateadas las particiones / y swap.\n\nLo hare lo mejor que pueda pero si algo falla que no venga nadie a llorarme." 0 0
 ;then
 	clear
 else
@@ -45,20 +45,52 @@ fi
 clear
 
 #Mostrar particiones disponibles
-if fdisk -l;then
+if lsblk -n --output TYPE,KNAME,SIZE,FSTYPE,LABEL | awk '$1=="part"';then
 	echo ""
-	echo "Estas son las particiones disponibles, elige donde se instalara el sistema (ejemplo: sda1)."
+	echo ""
+	echo "Estas son las particiones disponibles, escribe donde se instalara el sistema (ejemplo: sda1)."
+	echo "ATENCIÓN: LA PARTICIÓN ELEGIDA DEBE ESTAR VACIA Y EN CASO DE QUE NO LO ESTE TODO LO QUE CONTENGA SERA ELIMINADO."
+	echo "ESTE ES EL PASO MÁS IMPORTANTE, ELIGE CON EXTREMO CUIDADO Y ASEGURATE DE ESCRIBIRLO CORRECTAMENTE."
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se pueden mostrar las particiones, soluciona el problema y vuelve a empezar"
 	exit 1
 fi
 read -r system_partition
 
-#Montaje e instalacion
+clear
+
+if lsblk -n --output TYPE,KNAME,SIZE,FSTYPE,LABEL | awk '$1=="part"';then
+	echo ""
+	echo ""
+	echo "Estas son las particiones disponibles, escribe caul quieres que sea usada como swap (ejemplo: sda2)."
+	echo "Si no deseas usar swap simplemente dejalo en blanco y pulsa Intro."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se pueden mostrar las particiones, soluciona el problema y vuelve a empezar"
+	exit 1
+fi
+read -r swap_partition
+
+#Formateo, Montaje e instalacion
+if [ -z "$swap_partition" ]
+then
+      echo "Swap deshabilitado."
+elif mkswap /dev/$swap_partition;then
+	swapon /dev/$swap_partition
+	echo "Swap creado y habilidato."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se puede crear o montar la partición $swap_partition para swap, se continuara sin ella."
+fi
+
+if mkfs.ext4 /dev/$system_partition;then
+	echo "Particion $system_partition formateada correctamente a EXT4."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido formatear la partición $system_partition para el sistema, soluciona el problema y vuelve a empezar."
+	exit 1
+fi
 if mount /dev/$system_partition /mnt;then
 	echo "Particion montada correctamente, comenzando instalación..."
 else
-	echo "Error montando particion."
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido montar la partición $system_partition para el sistema, soluciona el problema y vuelve a empezar."
 	exit 1
 fi
 if pacstrap /mnt base linux-lts linux-firmware;then
@@ -93,3 +125,27 @@ else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido establcer la zona horaria del sistema, soluciona el problema y vuelve a empezar"
 	exit 1
 fi
+
+#Generar locales
+if sed -i "s/# es_ES.UTF-8 UTF-8/es_ES.UTF-8 UTF-8/" /etc/locale.gen;then
+	locale-gen
+	echo "Locales generados."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se han podido generar los locales, se continuara sin ellos."
+fi
+
+#Establecer layout para consola
+if echo "KEYMAP=es" > locale;then
+	echo "Layout para consola establecido."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido establecer el layout para consola, se continuara sin ellos."
+fi
+
+
+#Establecer nombre del dispositivo
+if nombre=`dialog --stdout --inputbox "Escribe el nombre para este dispositivo." 0 0`;then
+	echo "Layout para consola establecido."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m Error estableciendo nombre del dispositivo, se nombrara dispositivo."
+fi
+
