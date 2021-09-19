@@ -143,9 +143,74 @@ fi
 
 
 #Establecer nombre del dispositivo
-if nombre=`dialog --stdout --inputbox "Escribe el nombre para este dispositivo." 0 0`;then
-	echo "Layout para consola establecido."
+if nombre=`dialog --stdout --inputbox "Escribe el hostname." 0 0`;then
+	echo $nombre > /etc/hostname;
+	echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$nombre.localdomain $nombre" > locale;
+	echo "Hostname establecido."
 else
-	echo "\e[5m\e[31m\e[1mERROR:\e[0m Error estableciendo nombre del dispositivo, se nombrara dispositivo."
+	nombre='Dispositivo'
+	echo $nombre > /etc/hostname;
+	echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$nombre.localdomain $nombre" > locale;
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m Error estableciendo Hostname, se nombrara Dispositivo."
 fi
 
+
+pacman -Sy git grub os-prober mtools efibootmgr dosfstools networkmanager openssh dhcpcd --noconfirm
+
+#Establecer contraseña de root
+if echo "Escribe la contraseña para root";then
+	passwd
+	echo "Contraseña establecida."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha establcer la nueva contraseña prar root, omitiendo."
+fi
+
+#Creacion de usuario principal
+if echo "escribe tu nombre de usuario";then
+	read user
+	useradd -m $user
+	echo "Escribe la contraseña para $user"
+	passwd $user
+	echo "Contraseña establecida."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha establcer la nueva contraseña prar $user, omitiendo."
+fi
+
+#Añadir a grupos
+if usermod -aG wheel,video,audio,storage jecht;then
+	echo "$user añadido a grupos principales."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido añadir a $user a los grupos principales, omitiendo."
+fi
+
+#Habilitar sudo
+if sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers;then
+	echo "sudo habiitado."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se habilitar, omitiendo."
+fi
+
+
+#Instalar grub para BIOS
+if grub-install --target=i386-pc /dev/$system_partition;then
+	grub-mkconfig -o /boot/grub/grub.cfg
+	echo "grub instalado."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se podido instalar grub, el sistema no podra arrancar."
+fi
+
+
+#Habilitar red
+if systemctl enable NetworkManager;then
+	echo "Servicio de red habilitado."
+else
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se podido habilitar la red, no habra conexión hasta que se haga manualmente."
+fi
+
+#Instalacion de escritorio
+
+#instalacion de aplicaciones
+
+logout
+umount /mnt
+poweroff
