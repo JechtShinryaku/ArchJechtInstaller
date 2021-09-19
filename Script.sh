@@ -3,9 +3,9 @@
 clear
 
 if ping -q -c 3 google.com >/dev/null 2>&1; then
-	echo "Conexión a internet detectada."
+	echo "\e[1m\e[32mConexión a internet detectada.\e[0m"
 else
-	echo "Error, no se ha podido conectar a internet."
+	echo "\e[5m\e[31m\e[1mError, no se ha podido conectar a internet.\e[0m"
 	exit 1
 fi
 
@@ -27,7 +27,7 @@ fi
 
 #Asignacion de teclado a español
 if loadkeys es;then
-	echo "\e[1m\e[32mTeclado configurado a Español."
+	echo "\e[1m\e[32mTeclado configurado a Español.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido configurar el teclado, tendras que hacerlo manualmente depues."
 fi
@@ -36,7 +36,7 @@ fi
 #Establecer zona horaria
 if timedatectl set-timezone Europe/Madrid;then
 	timedatectl set-ntp true
-	echo "\e[1m\e[32mZona horaria establecida en Madrid."
+	echo "\e[1m\e[32mZona horaria establecida en Madrid.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido establecer la zona horaria, tendras que hacerlo manualmente depues."
 fi
@@ -72,28 +72,28 @@ read -r swap_partition
 #Formateo, Montaje e instalacion
 if [ -z "$swap_partition" ]
 then
-      echo "\e[1m\e[32mSwap deshabilitado."
+      echo "\e[1m\e[32mSwap deshabilitado.\e[0m"
 elif mkswap /dev/$swap_partition;then
 	swapon /dev/$swap_partition
-	echo "\e[1m\e[32mSwap creado y habilidato."
+	echo "\e[1m\e[32mSwap creado y habilidato.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se puede crear o montar la partición $swap_partition para swap, se continuara sin ella."
 fi
 
 if mkfs.ext4 /dev/$system_partition;then
-	echo "\e[1m\e[32mParticion $system_partition formateada correctamente a EXT4."
+	echo "\e[1m\e[32mParticion $system_partition formateada correctamente a EXT4.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido formatear la partición $system_partition para el sistema, soluciona el problema y vuelve a empezar."
 	exit 1
 fi
 if mount /dev/$system_partition /mnt;then
-	echo "\e[1m\e[32mParticion montada correctamente, comenzando instalación..."
+	echo "\e[1m\e[32mParticion montada correctamente, comenzando instalación...\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido montar la partición $system_partition para el sistema, soluciona el problema y vuelve a empezar."
 	exit 1
 fi
 if pacstrap /mnt base linux-lts linux-firmware;then
-	echo "\e[1m\e[32mSe ha instalado el sistema base Linux correctamente."
+	echo "\e[1m\e[32mSe ha instalado el sistema base Linux correctamente.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m Error durante la instalacion, soluciona el problema y vuelve a empezar"
 	exit 1
@@ -102,7 +102,7 @@ fi
 
 #Generar tabla de particiones
 if genfstab -U /mnt >> /mnt/etc/fstab;then
-	echo "\e[1m\e[32mfstab generado..."
+	echo "\e[1m\e[32mfstab generado...\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido generar la tabla de particiones, soluciona el problema y vuelve a empezar"
 	exit 1
@@ -119,7 +119,7 @@ fi
 #Establecer zona horaria para la instalacion, creo que no funciona porque luego no se refleja
 if arch-chroot /mnt ln -sf /usr/share/zoneinfo/Europe/Madrid /etc/localtime;then
 	arch-chroot /mnt hwclock --systohc
-	echo "\e[1m\e[32mEstablecida zona horaria del sistema a Madrid."
+	echo "\e[1m\e[32mEstablecida zona horaria del sistema a Madrid.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido establcer la zona horaria del sistema, soluciona el problema y vuelve a empezar"
 	exit 1
@@ -128,14 +128,14 @@ fi
 #Generar locales
 if arch-chroot /mnt sed -i "s/# es_ES.UTF-8 UTF-8/es_ES.UTF-8 UTF-8/" /etc/locale.gen;then
 	arch-chroot /mnt locale-gen
-	echo "\e[1m\e[32mLocales generados."
+	echo "\e[1m\e[32mLocales generados.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se han podido generar los locales, se continuara sin ellos."
 fi
 
 #Establecer layout para consola
 if arch-chroot /mnt echo "KEYMAP=es" > locale;then
-	echo "\e[1m\e[32mLayout para consola establecido."
+	echo "\e[1m\e[32mLayout para consola establecido.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido establecer el layout para consola, se continuara sin ellos."
 fi
@@ -145,7 +145,7 @@ fi
 if arch-chroot /mnt nombre=`dialog --stdout --inputbox "Escribe el hostname." 0 0`;then
 	arch-chroot /mnt echo $nombre > /etc/hostname;
 	arch-chroot /mnt echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$nombre.localdomain $nombre" > locale;
-	echo "\e[1m\e[32mHostname establecido."
+	echo "\e[1m\e[32mHostname establecido.\e[0m"
 else
 	nombre='Dispositivo'
 	arch-chroot /mnt echo $nombre > /etc/hostname;
@@ -159,7 +159,7 @@ arch-chroot /mnt pacman -Sy git grub os-prober mtools efibootmgr dosfstools netw
 #Establecer contraseña de root
 if echo "Escribe la contraseña para root";then
 	arch-chroot /mnt passwd
-	echo "\e[1m\e[32mContraseña establecida."
+	echo "\e[1m\e[32mContraseña establecida.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha establcer la nueva contraseña prar root, omitiendo."
 fi
@@ -170,21 +170,21 @@ if echo "escribe tu nombre de usuario";then
 	arch-chroot /mnt useradd -m $user
 	echo "Escribe la contraseña para $user"
 	arch-chroot /mnt passwd $user
-	echo "\e[1m\e[32mContraseña creado."
+	echo "\e[1m\e[32m$user creado.\e[0m"
 else
-	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha establcer la nueva contraseña prar $user, omitiendo."
+	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido crear a $user, omitiendo."
 fi
 
 #Añadir a grupos
 if arch-chroot /mnt usermod -aG wheel,video,audio,storage jecht;then
-	echo "\e[1m\e[32m$user añadido a grupos principales."
+	echo "\e[1m\e[32m$user añadido a grupos principales.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido añadir a $user a los grupos principales, omitiendo."
 fi
 
 #Habilitar sudo
 if arch-chroot /mnt sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers;then
-	echo "\e[1m\e[32msudo habiitado."
+	echo "\e[1m\e[32msudo habiitado.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se habilitar, omitiendo."
 fi
@@ -193,7 +193,7 @@ fi
 #Instalar grub para BIOS
 if arch-chroot /mnt grub-install --target=i386-pc /dev/$system_partition;then
 	arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-	echo "\e[1m\e[32mgrub instalado."
+	echo "\e[1m\e[32mgrub instalado.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se podido instalar grub, el sistema no podra arrancar."
 fi
@@ -201,7 +201,7 @@ fi
 
 #Habilitar red
 if arch-chroot /mnt systemctl enable NetworkManager;then
-	echo "\e[1m\e[32mServicio de red habilitado."
+	echo "\e[1m\e[32mServicio de red habilitado.\e[0m"
 else
 	echo "\e[5m\e[31m\e[1mERROR:\e[0m No se podido habilitar la red, no habra conexión hasta que se haga manualmente."
 fi
@@ -212,5 +212,5 @@ fi
 
 #logout
 umount /mnt
-echo "\e[1m\e[32mSistema instalado."
+echo "\e[1m\e[32mSistema instalado.\e[0m"
 #poweroff
