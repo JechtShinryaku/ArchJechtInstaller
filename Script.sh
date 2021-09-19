@@ -176,7 +176,7 @@ else
 fi
 
 #Añadir a grupos
-if arch-chroot /mnt usermod -aG wheel,video,audio,storage jecht;then
+if arch-chroot /mnt usermod -aG wheel,video,audio,storage $user;then
 	echo -e "\e[1m\e[32m$user añadido a grupos principales.\e[0m"
 else
 	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido añadir a $user a los grupos principales, omitiendo."
@@ -186,16 +186,18 @@ fi
 if arch-chroot /mnt sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers;then
 	echo -e "\e[1m\e[32msudo habiitado.\e[0m"
 else
-	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se habilitar, omitiendo."
+	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se podido habilitar sudo, omitiendo."
 fi
 
 
 #Instalar grub para BIOS
-if arch-chroot /mnt grub-install --target=i386-pc /dev/$system_partition;then
+if echo "escribe la unidad donde se instalara GRUB (ejemplo: sda)";then
+	read grubdisk
+	arch-chroot /mnt grub-install --target=i386-pc /dev/$grubdisk
 	arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 	echo -e "\e[1m\e[32mgrub instalado.\e[0m"
 else
-	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se podido instalar grub, el sistema no podra arrancar."
+	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se podido instalar grub en $grubdisk, el sistema no podra arrancar."
 fi
 
 
