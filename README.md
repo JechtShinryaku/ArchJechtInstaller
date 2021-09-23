@@ -6,6 +6,6 @@ Utiliza estos comandos par usarlo:
 
 pacman -Sy git
 
-git clone https://www.github.com/JechtShinryakuArchJechtInstaller
+git clone https://www.github.com/JechtShinryaku/ArchJechtInstaller
 
 sh ArchJechtInstaller/Script.sh
