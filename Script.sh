@@ -154,7 +154,7 @@ else
 fi
 
 
-arch-chroot /mnt pacman -Sy git grub os-prober mtools efibootmgr dosfstools networkmanager openssh dhcpcd --noconfirm
+arch-chroot /mnt pacman -Sy nano sudo git grub os-prober mtools efibootmgr dosfstools networkmanager openssh dhcpcd --noconfirm
 
 #Establecer contraseña de root
 if echo "Escribe la contraseña para root";then
@@ -214,5 +214,6 @@ fi
 
 #logout
 umount /mnt
+clear
 echo -e "\e[1m\e[32mSistema instalado.\e[0m"
 #poweroff
