@@ -25,12 +25,7 @@ else
 	exit 1
 fi
 
-#Asignacion de teclado a español
-if loadkeys es;then
-	echo -e "\e[1m\e[32mTeclado configurado a Español.\e[0m"
-else
-	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido configurar el teclado, tendras que hacerlo manualmente depues."
-fi
+
 
 
 #Establecer zona horaria
@@ -134,10 +129,17 @@ else
 fi
 
 #Establecer layout para consola
-if arch-chroot /mnt echo "KEYMAP=es" > locale;then
+if arch-chroot /mnt echo "KEYMAP=es" > /etc/vconsole.conf;then
 	echo -e "\e[1m\e[32mLayout para consola establecido.\e[0m"
 else
 	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido establecer el layout para consola, se continuara sin ellos."
+fi
+
+#Asignacion de teclado a español
+if arch-chroot /mnt loadkeys es;then
+	echo -e "\e[1m\e[32mTeclado configurado a Español.\e[0m"
+else
+	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se ha podido configurar el teclado, tendras que hacerlo manualmente depues."
 fi
 
 
@@ -154,7 +156,7 @@ else
 fi
 
 
-arch-chroot /mnt pacman -Sy nano sudo git grub os-prober mtools efibootmgr dosfstools networkmanager openssh dhcpcd --noconfirm
+arch-chroot /mnt pacman -Sy nano sudo bash-completion git grub os-prober mtools efibootmgr dosfstools networkmanager openssh dhcpcd --noconfirm
 
 #Establecer contraseña de root
 if echo "Escribe la contraseña para root";then
@@ -184,7 +186,7 @@ fi
 
 #Habilitar sudo
 if arch-chroot /mnt sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers;then
-	echo -e "\e[1m\e[32msudo habiitado.\e[0m"
+	echo -e "\e[1m\e[32msudo habilitado.\e[0m"
 else
 	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se podido habilitar sudo, omitiendo."
 fi
