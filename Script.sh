@@ -156,7 +156,7 @@ else
 fi
 
 
-arch-chroot /mnt pacman -Sy nano sudo bash-completion git grub os-prober mtools efibootmgr dosfstools networkmanager openssh dhcpcd --noconfirm
+arch-chroot /mnt pacman -Sy nano sudo bash-completion git grub os-prober mtools dosfstools networkmanager openssh dhcpcd --noconfirm
 
 #Establecer contraseña de root
 if echo "Escribe la contraseña para root";then
@@ -193,13 +193,16 @@ fi
 
 
 #Instalar grub para BIOS
-
-if echo "escribe la unidad donde se instalara GRUB (ejemplo: sda)";then
+if lsblk -n --output TYPE,KNAME,SIZE,FSTYPE,LABEL | awk '$1=="disk"';then
+	echo ""
+	echo ""
+	echo "Estos son las unidades disponibles, escribe la unidad donde se instalara GRUB (ejemplo: sda)."
 	read grubdisk
 	if [ -z "$grubdisk" ]
 	then
 		echo -e "\e[1m\e[32mGrub no se instalara.\e[0m"
-	elif arch-chroot /mnt grub-install --target=i386-pc /dev/$grubdisk;then
+	elif arch-chroot /mnt grub-install --target=i386-pc --recheck /dev/$grubdisk;then
+		arch-chroot /mnt sed -i -E 's/GRUB_CMDLINE_LINUX_DEFAULT="(.*) quiet"/GRUB_CMDLINE_LINUX_DEFAULT=""/' /etc/default/grub
 		arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 		echo -e "\e[1m\e[32mGrub instalado.\e[0m"
 	fi
@@ -219,7 +222,7 @@ fi
 if interfaz=`dialog --stdout --menu "Interfaz gráfica" 0 0 0 1 "qtile" 2 "sin interfaz"`;then
 	if [ $interfaz -eq 1 ];then
 		#if driver=`dialog --stdout --menu "Driver Gráfico" 0 0 0 1 "amdgpu GCN<" 2 "ati Gráficas antiguas" `;then
-		arch-chroot /mnt pacman -Sy picom lightdm lightdm-gtk-greeterlightdm-gtk-greeter-settings xorg-server --noconfirm
+		arch-chroot /mnt pacman -Sy picom lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings xorg-server --noconfirm
 		arch-chroot /mnt systemctl enable lightdm
 		arch-chroot /mnt sed -i 's/# greeter-session = Session to load for greeter/greeter-session = lightdm-gtk-greeter/' /etc/lightdm/lightdm.conf
 		echo -e "\e[1m\e[32mInterfaz instalada.\e[0m"
