@@ -210,12 +210,20 @@ else
 	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se podido habilitar la red, no habra conexión hasta que se haga manualmente."
 fi
 
-#Instalacion de escritorio
-#picom lightdm lightdm-gtk-greeterlightdm-gtk-greeter-settings xorg-server drivergpu
+#Instalacion de Interfaz
+if interfaz=`dialog --stdout --menu "Interfaz gráfica" 0 0 0 1 "qtile" 2 "sin interfaz"`;then
+	if [ $interfaz -eq 1 ];then
+		#if driver=`dialog --stdout --menu "Driver Gráfico" 0 0 0 1 "amdgpu GCN<" 2 "ati Gráficas antiguas" `;then
+		arch-chroot /mnt pacman -Sy picom lightdm lightdm-gtk-greeterlightdm-gtk-greeter-settings xorg-server --noconfirm
+		arch-chroot /mnt systemctl enable lightdm
+		arch-chroot /mnt sed -i 's/# greeter-session = Session to load for greeter/greeter-session = lightdm-gtk-greeter/' /etc/lightdm/lightdm.conf
+	else
+		echo "sin interfaz"
+	fi
+else
+	echo "sin seleccion"
+fi
 
-#systemctl enable lightdm
-#edit /etc/lightdm/lightdm.conf
-#	greeter-session = lightdm-gtk-greeter
 
 #instalacion de aplicaciones
 #alacrity
