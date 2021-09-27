@@ -202,7 +202,7 @@ if lsblk -n --output TYPE,KNAME,SIZE,FSTYPE,LABEL | awk '$1=="disk"';then
 	then
 		echo -e "\e[1m\e[32mGrub no se instalara.\e[0m"
 	elif arch-chroot /mnt grub-install --target=i386-pc --recheck /dev/$grubdisk;then
-		arch-chroot /mnt sed -i -E 's/GRUB_CMDLINE_LINUX_DEFAULT="(.*) quiet"/GRUB_CMDLINE_LINUX_DEFAULT=""/' /etc/default/grub
+		arch-chroot /mnt sed -i -E 's/GRUB_CMDLINE_LINUX_DEFAULT="(.*) quiet"/GRUB_CMDLINE_LINUX_DEFAULT="nomodeset"/' /etc/default/grub
 		arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
 		echo -e "\e[1m\e[32mGrub instalado.\e[0m"
 	fi
