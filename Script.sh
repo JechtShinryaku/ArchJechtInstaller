@@ -193,11 +193,16 @@ fi
 
 
 #Instalar grub para BIOS
+
 if echo "escribe la unidad donde se instalara GRUB (ejemplo: sda)";then
 	read grubdisk
-	arch-chroot /mnt grub-install --target=i386-pc /dev/$grubdisk
-	arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
-	echo -e "\e[1m\e[32mgrub instalado.\e[0m"
+	if [ -z "$grubdisk" ]
+	then
+		echo -e "\e[1m\e[32mGrub no se instalara.\e[0m"
+	elif arch-chroot /mnt grub-install --target=i386-pc /dev/$grubdisk;then
+		arch-chroot /mnt grub-mkconfig -o /boot/grub/grub.cfg
+		echo -e "\e[1m\e[32mGrub instalado.\e[0m"
+	fi
 else
 	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se podido instalar grub en $grubdisk, el sistema no podra arrancar."
 fi
@@ -217,11 +222,12 @@ if interfaz=`dialog --stdout --menu "Interfaz gráfica" 0 0 0 1 "qtile" 2 "sin i
 		arch-chroot /mnt pacman -Sy picom lightdm lightdm-gtk-greeterlightdm-gtk-greeter-settings xorg-server --noconfirm
 		arch-chroot /mnt systemctl enable lightdm
 		arch-chroot /mnt sed -i 's/# greeter-session = Session to load for greeter/greeter-session = lightdm-gtk-greeter/' /etc/lightdm/lightdm.conf
+		echo -e "\e[1m\e[32mInterfaz instalada.\e[0m"
 	else
-		echo "sin interfaz"
+		echo -e "\e[1m\e[32mModo sin interfaz.\e[0m"
 	fi
 else
-	echo "sin seleccion"
+	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se podido instalar la interfaz, tendras que hacerlo manualmente."
 fi
 
 
