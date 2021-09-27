@@ -211,8 +211,14 @@ else
 fi
 
 #Instalacion de escritorio
+#picom lightdm lightdm-gtk-greeterlightdm-gtk-greeter-settings xorg-server drivergpu
+
+#systemctl enable lightdm
+#edit /etc/lightdm/lightdm.conf
+#	greeter-session = lightdm-gtk-greeter
 
 #instalacion de aplicaciones
+#alacrity
 
 #logout
 umount /mnt
