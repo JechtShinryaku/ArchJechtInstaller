@@ -146,12 +146,12 @@ fi
 #Establecer nombre del dispositivo
 if nombre=`dialog --stdout --inputbox "Escribe el hostname." 0 0`;then
 	arch-chroot /mnt echo $nombre > /etc/hostname;
-	arch-chroot /mnt echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$nombre.localdomain $nombre" > locale;
+	arch-chroot /mnt echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$nombre.localdomain $nombre" > /etc/hosts;
 	echo -e "\e[1m\e[32mHostname establecido.\e[0m"
 else
 	nombre='Dispositivo'
 	arch-chroot /mnt echo $nombre > /etc/hostname;
-	arch-chroot /mnt echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$nombre.localdomain $nombre" > locale;
+	arch-chroot /mnt echo -e "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.1.1\t$nombre.localdomain $nombre" > /etc/hosts;
 	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m Error estableciendo Hostname, se nombrara Dispositivo."
 fi
 
