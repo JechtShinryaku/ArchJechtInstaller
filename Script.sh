@@ -233,6 +233,7 @@ else
 	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se podido instalar la interfaz, tendras que hacerlo manualmente."
 fi
 
+#Configuracion de ip estatica
 
 #instalacion de aplicaciones
 #alacrity
