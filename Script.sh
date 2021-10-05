@@ -234,6 +234,14 @@ else
 fi
 
 #Configuracion de ip estatica
+#/etc/dhcpcd.conf
+#interface eth0
+#noipv6rs
+#static ip_address=192.168.0.10/24
+#static broadcast_address=192.168.0.63
+#static ip6_address=fd51:42f8:caae:d92e::ff/64
+#static routers=192.168.0.1
+#static domain_name_servers=192.168.0.1 fd51:42f8:caae:d92e::1
 
 #instalacion de aplicaciones
 #alacrity
