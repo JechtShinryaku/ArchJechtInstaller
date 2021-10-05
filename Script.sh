@@ -223,6 +223,7 @@ if interfaz=`dialog --stdout --menu "Interfaz gráfica" 0 0 0 1 "qtile" 2 "sin i
 	if [ $interfaz -eq 1 ];then
 		#if driver=`dialog --stdout --menu "Driver Gráfico" 0 0 0 1 "amdgpu GCN<" 2 "ati Gráficas antiguas" `;then
 		arch-chroot /mnt pacman -Sy picom lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings xorg-server qtile --noconfirm
+		#EXTRAS arch-chroot /mnt pacman -Sy alsa-utils libpulse lm_sensors python-dbus-next python-iwlib python-psutil
 		arch-chroot /mnt systemctl enable lightdm
 		arch-chroot /mnt sed -i 's/# greeter-session = Session to load for greeter/greeter-session = lightdm-gtk-greeter/' /etc/lightdm/lightdm.conf
 		echo -e "\e[1m\e[32mInterfaz instalada.\e[0m"
