@@ -246,6 +246,12 @@ fi
 
 #instalacion de aplicaciones
 #alacrity
+#firefox
+#barrier
+#nemo
+	#gsettings set org.cinnamon.desktop.default-applications.terminal exec <terminal-name>
+	#gsettings set org.cinnamon.desktop.default-applications.terminal exec-arg -e
+#notepadqq
 
 #logout
 umount /mnt
