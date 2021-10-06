@@ -251,6 +251,7 @@ fi
 #nemo
 	#gsettings set org.cinnamon.desktop.default-applications.terminal exec <terminal-name>
 	#gsettings set org.cinnamon.desktop.default-applications.terminal exec-arg -e
+#nfs-utils
 #notepadqq
 
 #logout
