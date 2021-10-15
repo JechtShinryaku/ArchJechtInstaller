@@ -234,15 +234,16 @@ else
 	echo -e "\e[5m\e[31m\e[1mERROR:\e[0m No se podido instalar la interfaz, tendras que hacerlo manualmente."
 fi
 
-#Configuracion de ip estatica
-#/etc/dhcpcd.conf
-#interface eth0
-#noipv6rs
-#static ip_address=192.168.0.10/24
-#static broadcast_address=192.168.0.63
-#static ip6_address=fd51:42f8:caae:d92e::ff/64
-#static routers=192.168.0.1
-#static domain_name_servers=192.168.0.1 fd51:42f8:caae:d92e::1
+#Configuracion de ip estatica ejemplo wifi
+#nmcli device wifi list
+#nmcli device wifi connect CASA password 10109090
+#nmcli connection show
+#nmcli connection modify "CASA" -ipv4.address "192.168.1.144"
+#nmcli connection modify "CASA" ipv4.address 192.168.1.6/24
+#nmcli connection modify "CASA" ipv4.method manual
+#nmcli connection modify "CASA" ipv4.gateway "192.168.1.1"
+#nmcli connection modify "CASA" ipv4.dns "1.1.1.1,4.4.4.4"
+#nmcli connection modify "CASA" ipv4.ignore-auto-dns yes
 
 #instalacion de aplicaciones
 #alacrity
