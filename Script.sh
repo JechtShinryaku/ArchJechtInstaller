@@ -15,6 +15,7 @@ pacman -Sy dialog --noconfirm
 #echo "Este Script aun esta en desarrollo y asume lo siguiente:"
 #echo "-Se dispone de conexion a internet"
 #echo "-Esta máquina ya tiene creadas y preformateadas las particiones que se usaran durante la instalacion."
+#echo "Se asume que se reside en España."
 #echo "Lo hare lo mejor que pueda pero si algo falla que no venga nadie a llorarme."
 #echo "Si todo esta preparado pulsa Intro para continuar, en caso contrario pulsa q para abortar la instalacion."
 #read -n 1 -r -s conform
